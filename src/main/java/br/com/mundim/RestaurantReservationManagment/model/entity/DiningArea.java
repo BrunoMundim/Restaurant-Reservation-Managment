@@ -10,7 +10,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Positive;
 
 @Entity
-@Table(name = "dining-area")
+@Table(name = "dining_area")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data

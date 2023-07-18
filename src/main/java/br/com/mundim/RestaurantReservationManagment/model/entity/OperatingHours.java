@@ -1,16 +1,17 @@
 package br.com.mundim.RestaurantReservationManagment.model.entity;
 
+import br.com.mundim.RestaurantReservationManagment.model.dto.OperatingHoursDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
 
 @Entity
-@Table(name = "opening-hours")
+@Table(name = "opening_hours")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -25,13 +26,19 @@ public class OperatingHours {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty
+    @NotNull
     private WeekDay weekDay;
 
-    @NotEmpty
+    @NotNull
     private LocalTime opening;
 
-    @NotEmpty
+    @NotNull
     private LocalTime closing;
+
+    public OperatingHours(OperatingHoursDTO dto) {
+        this.weekDay = dto.weekDay();
+        this.opening = dto.opening();
+        this.closing = dto.closing();
+    }
 
 }

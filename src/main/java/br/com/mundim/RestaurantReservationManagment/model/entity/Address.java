@@ -1,5 +1,6 @@
 package br.com.mundim.RestaurantReservationManagment.model.entity;
 
+import br.com.mundim.RestaurantReservationManagment.model.dto.AddressDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,13 +22,14 @@ public class Address {
     private Long id;
 
     @NotEmpty
-    private Long restaurantId;
+    private String cep;
 
     @NotEmpty
     private String street;
 
     @NotEmpty
     private String number;
+
     private String addressLine2;
 
     @NotEmpty
@@ -36,8 +38,12 @@ public class Address {
     @NotEmpty
     private String state;
 
-    @NotEmpty
-    private String cep;
-    private String phoneNumber;
-
+    public Address(AddressDTO dto) {
+        this.cep = dto.cep();
+        this.street = dto.street();
+        this.number = dto.number();
+        this.addressLine2 = dto.addressLine2();
+        this.city = dto.city();
+        this.state = dto.state();
+    }
 }

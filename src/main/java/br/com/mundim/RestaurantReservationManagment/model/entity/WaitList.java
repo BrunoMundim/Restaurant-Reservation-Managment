@@ -11,7 +11,7 @@ import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "wait-list")
+@Table(name = "wait_list")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
