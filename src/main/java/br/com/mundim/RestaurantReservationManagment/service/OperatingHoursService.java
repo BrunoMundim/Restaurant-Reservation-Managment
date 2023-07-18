@@ -18,8 +18,4 @@ public class OperatingHoursService {
         return operatingHoursRepository.save(new OperatingHours(dto));
     }
 
-    public void delete(Long id) {
-        operatingHoursRepository.deleteById(id);
-    }
-
 }

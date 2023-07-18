@@ -12,11 +12,16 @@ public class BaseErrorMessage {
     public static final BaseErrorMessage ADDRESS_NOT_FOUND_BY_ID = new BaseErrorMessage("AddressNotFoundById");
     public static final BaseErrorMessage RESTAURANT_NOT_FOUND_BY_ID = new BaseErrorMessage("RestaurantNotFoundById");
     public static final BaseErrorMessage DINING_AREA_NOT_FOUND_BY_ID = new BaseErrorMessage("DiningAreaNotFoundById");
+    public static final BaseErrorMessage CUSTOMER_NOT_FOUND_BY_ID = new BaseErrorMessage("CustomerNotFoundById");
+    public static final BaseErrorMessage CUSTOMER_NOT_FOUND_BY_CPF = new BaseErrorMessage("CustomerNotFoundByCpf");
+    public static final BaseErrorMessage CUSTOMER_NOT_FOUND_BY_EMAIL = new BaseErrorMessage("CustomerNotFoundByEmail");
     public static final BaseErrorMessage OPERATING_HOURS_NULL = new BaseErrorMessage("OperatingHoursNull");
     public static final BaseErrorMessage ADDRESS_NULL = new BaseErrorMessage("AddressNull");
     public static final BaseErrorMessage INCORRECT_WEEK_DAY = new BaseErrorMessage("IncorrectWeekDay");
     public static final BaseErrorMessage INCORRECT_OPERATING_HOUR_FORMAT = new BaseErrorMessage("IncorrectOperatingHourFormat");
-    public static final BaseErrorMessage DINING_AREA_RESERVED_FOR_ANOTHER_CUSTOMER = new BaseErrorMessage("DiningAreaReservedForAnotherCustomer");
+    public static final BaseErrorMessage DUPLICATED_EMAIL = new BaseErrorMessage("DuplicatedEmail");
+    public static final BaseErrorMessage DUPLICATED_CPF = new BaseErrorMessage("DuplicatedCPF");
+    public static final BaseErrorMessage DUPLICATED_CNPJ = new BaseErrorMessage("DuplicatedCNPJ");
 
     private final String key;
     private String[] params;

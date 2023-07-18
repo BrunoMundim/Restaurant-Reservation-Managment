@@ -1,19 +1,21 @@
 package br.com.mundim.RestaurantReservationManagment.exceptions.config;
 
 import br.com.mundim.RestaurantReservationManagment.exceptions.BadRequestException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.validation.ConstraintViolationException;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.Calendar;
 
-import static br.com.mundim.RestaurantReservationManagment.exceptions.config.BaseErrorMessage.INCORRECT_OPERATING_HOUR_FORMAT;
-import static br.com.mundim.RestaurantReservationManagment.exceptions.config.BaseErrorMessage.INCORRECT_WEEK_DAY;
+import static br.com.mundim.RestaurantReservationManagment.exceptions.config.BaseErrorMessage.*;
 
 @ControllerAdvice
 public class ApiExceptionHandler {
@@ -63,5 +65,28 @@ public class ApiExceptionHandler {
 
         return new ResponseEntity<>(apiException, responseStatus);
     }
+
+    @ExceptionHandler(SQLException.class)
+    public ResponseEntity<ApiException> handleSQLException(SQLException e) {
+        HttpStatus badRequest = HttpStatus.BAD_REQUEST;
+
+        String message = "";
+        if(e.toString().contains("cpf"))
+            message = "CPF already in use";
+        if(e.toString().contains("cnpj"))
+            message = "CNPJ already in use";
+        if(e.toString().contains("email"))
+            message = "Email already in use";
+
+        ApiException apiException = new ApiException(
+                message,
+                HttpStatus.BAD_REQUEST,
+                new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(Calendar.getInstance().getTime())
+        );
+
+        return new ResponseEntity<>(apiException, badRequest);
+    }
+
+
 
 }
