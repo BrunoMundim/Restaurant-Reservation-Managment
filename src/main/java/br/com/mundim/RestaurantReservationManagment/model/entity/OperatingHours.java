@@ -37,8 +37,7 @@ public class OperatingHours {
 
     public OperatingHours(OperatingHoursDTO dto) {
         this.weekDay = dto.weekDay();
-        this.opening = dto.opening();
-        this.closing = dto.closing();
+        this.opening = LocalTime.parse(dto.opening());
+        this.closing = LocalTime.parse(dto.closing());
     }
-
 }

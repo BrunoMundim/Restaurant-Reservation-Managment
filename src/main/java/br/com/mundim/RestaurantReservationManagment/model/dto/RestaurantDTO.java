@@ -10,6 +10,7 @@ public record RestaurantDTO(
         @Schema(defaultValue = "08.180.283/0001-02") String cnpj,
         @Schema(defaultValue = "Padaria do seu zé") String name,
         @Schema(defaultValue = "email@email.com") String email,
-        @Schema(defaultValue = "password") String password
+        @Schema(defaultValue = "password") String password,
+        @Schema(defaultValue = "(34) 3432-3432") String cellphone
 ) {
 }

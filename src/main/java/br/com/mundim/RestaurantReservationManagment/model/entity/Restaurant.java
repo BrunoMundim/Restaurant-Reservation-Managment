@@ -1,5 +1,6 @@
 package br.com.mundim.RestaurantReservationManagment.model.entity;
 
+import br.com.mundim.RestaurantReservationManagment.model.dto.OperatingHoursDTO;
 import br.com.mundim.RestaurantReservationManagment.model.dto.RestaurantDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,11 +34,13 @@ public class Restaurant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    private Long addressId;
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "address_id", unique = true)
+    private Address address;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "restaurant_id")
+    @NotNull
     private List<OperatingHours> operatingHours;
 
     @CNPJ
@@ -55,13 +58,26 @@ public class Restaurant {
     @NotEmpty
     private String password;
 
-    public Restaurant(Long addressId, List<OperatingHours> operatingHours, RestaurantDTO dto) {
-        this.addressId = addressId;
+    @NotEmpty
+    private String cellphone;
+
+    public Restaurant(Address address, List<OperatingHours> operatingHours, RestaurantDTO dto) {
+        this.address = address;
         this.operatingHours = operatingHours;
         this.cnpj = dto.cnpj();
         this.name = dto.name();
         this.email = dto.email();
         this.password = passwordEncoder().encode(dto.password());
+        this.cellphone = dto.cellphone();
+    }
+
+    public void setPassword(String password) {
+        this.password = passwordEncoder().encode(password);
+    }
+
+    public void setOperatingHours(List<OperatingHours> operatingHours) {
+        this.operatingHours.clear();
+        this.operatingHours.addAll(operatingHours);
     }
 
 }
