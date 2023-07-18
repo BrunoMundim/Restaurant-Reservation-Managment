@@ -1,5 +1,6 @@
 package br.com.mundim.RestaurantReservationManagment.model.entity;
 
+import br.com.mundim.RestaurantReservationManagment.model.dto.DiningAreaDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -7,7 +8,10 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+
+import static br.com.mundim.RestaurantReservationManagment.model.entity.DiningArea.Availability.AVAILABLE;
 
 @Entity
 @Table(name = "dining_area")
@@ -25,16 +29,25 @@ public class DiningArea {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty
+    @NotNull
     private Long restaurantId;
 
+    private Long customerId;
+
     @NotEmpty
-    private String tableIdentification;
+    private String diningAreaName;
 
     @Positive
     private Integer capacity;
 
-    @NotEmpty
+    @NotNull
     private Availability availability;
+
+    public DiningArea(DiningAreaDTO dto) {
+        this.restaurantId = dto.restaurantId();
+        this.diningAreaName = dto.diningAreaName();
+        this.capacity = dto.capacity();
+        this.availability = AVAILABLE;
+    }
 
 }

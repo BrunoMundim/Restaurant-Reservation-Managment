@@ -3,6 +3,7 @@ package br.com.mundim.RestaurantReservationManagment.service;
 import br.com.mundim.RestaurantReservationManagment.exceptions.BadRequestException;
 import br.com.mundim.RestaurantReservationManagment.model.dto.RestaurantDTO;
 import br.com.mundim.RestaurantReservationManagment.model.entity.Address;
+import br.com.mundim.RestaurantReservationManagment.model.entity.DiningArea;
 import br.com.mundim.RestaurantReservationManagment.model.entity.OperatingHours;
 import br.com.mundim.RestaurantReservationManagment.model.entity.Restaurant;
 import br.com.mundim.RestaurantReservationManagment.model.view.RestaurantView;
@@ -20,11 +21,13 @@ public class RestaurantService {
     private final RestaurantRepository restaurantRepository;
     private final AddressService addressService;
     private final OperatingHoursService operatingHoursService;
+    private final DiningAreaService diningAreaService;
 
-    public RestaurantService(RestaurantRepository restaurantRepository, AddressService addressService, OperatingHoursService operatingHoursService) {
+    public RestaurantService(RestaurantRepository restaurantRepository, AddressService addressService, OperatingHoursService operatingHoursService, DiningAreaService diningAreaService) {
         this.restaurantRepository = restaurantRepository;
         this.addressService = addressService;
         this.operatingHoursService = operatingHoursService;
+        this.diningAreaService = diningAreaService;
     }
 
     public RestaurantView create(RestaurantDTO dto) {
@@ -44,7 +47,7 @@ public class RestaurantService {
         return new RestaurantView(restaurant);
     }
 
-    private Restaurant findById(Long id) {
+    public Restaurant findById(Long id) {
         return restaurantRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException(
                         RESTAURANT_NOT_FOUND_BY_ID.params(id.toString()).getMessage()));
@@ -71,7 +74,15 @@ public class RestaurantService {
     public RestaurantView deleteById(Long id) {
         Restaurant restaurant = findById(id);
         restaurantRepository.deleteById(id);
+        deleteAllDiningAreasFromRestaurant(restaurant.getId());
         return new RestaurantView(restaurant);
+    }
+
+    private void deleteAllDiningAreasFromRestaurant(Long restaurantId) {
+        List<DiningArea> diningAreas = diningAreaService.findByRestaurantId(restaurantId);
+        for (DiningArea diningArea : diningAreas) {
+            diningAreaService.deleteById(diningArea.getId());
+        }
     }
 
     private List<OperatingHours> generateOperatingHours(RestaurantDTO dto) {
