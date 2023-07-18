@@ -1,0 +1,13 @@
+package br.com.mundim.RestaurantReservationManagment;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class RestaurantReservationManagmentApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(RestaurantReservationManagmentApplication.class, args);
+	}
+
+}
