@@ -4,7 +4,7 @@ import br.com.mundim.RestaurantReservationManagment.exceptions.BadRequestExcepti
 import br.com.mundim.RestaurantReservationManagment.model.dto.RestaurantDTO;
 import br.com.mundim.RestaurantReservationManagment.model.entity.Address;
 import br.com.mundim.RestaurantReservationManagment.model.entity.DiningArea;
-import br.com.mundim.RestaurantReservationManagment.model.entity.OperatingHours;
+import br.com.mundim.RestaurantReservationManagment.model.entity.OperatingHour;
 import br.com.mundim.RestaurantReservationManagment.model.entity.Restaurant;
 import br.com.mundim.RestaurantReservationManagment.model.view.RestaurantView;
 import br.com.mundim.RestaurantReservationManagment.repository.RestaurantRepository;
@@ -20,19 +20,19 @@ public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
     private final AddressService addressService;
-    private final OperatingHoursService operatingHoursService;
+    private final OperatingHourService operatingHourService;
     private final DiningAreaService diningAreaService;
 
-    public RestaurantService(RestaurantRepository restaurantRepository, AddressService addressService, OperatingHoursService operatingHoursService, DiningAreaService diningAreaService) {
+    public RestaurantService(RestaurantRepository restaurantRepository, AddressService addressService, OperatingHourService operatingHourService, DiningAreaService diningAreaService) {
         this.restaurantRepository = restaurantRepository;
         this.addressService = addressService;
-        this.operatingHoursService = operatingHoursService;
+        this.operatingHourService = operatingHourService;
         this.diningAreaService = diningAreaService;
     }
 
     public RestaurantView create(RestaurantDTO dto) {
-        Address address = addressService.create(dto.addressDTO());
-        List<OperatingHours> operatingHours = generateOperatingHours(dto);
+        Address address = addressService.create(dto.address());
+        List<OperatingHour> operatingHours = generateOperatingHours(dto);
         Restaurant restaurant = restaurantRepository.save(new Restaurant(address, operatingHours, dto));
         return new RestaurantView(restaurant);
     }
@@ -56,11 +56,11 @@ public class RestaurantService {
     public RestaurantView update(Long id, RestaurantDTO dto) {
         Restaurant restaurant = findById(id);
 
-        if (dto.addressDTO() == null)
+        if (dto.address() == null)
             throw new BadRequestException(ADDRESS_NULL.getMessage());
 
         restaurant.setOperatingHours(generateOperatingHours(dto));
-        restaurant.setAddress(new Address(dto.addressDTO()));
+        restaurant.setAddress(new Address(dto.address()));
         restaurant.setCnpj(dto.cnpj());
         restaurant.setName(dto.name());
         restaurant.setEmail(dto.email());
@@ -85,12 +85,12 @@ public class RestaurantService {
         }
     }
 
-    private List<OperatingHours> generateOperatingHours(RestaurantDTO dto) {
-        if (dto.operatingHoursDtos() == null)
+    private List<OperatingHour> generateOperatingHours(RestaurantDTO dto) {
+        if (dto.operatingHours() == null)
             throw new BadRequestException(OPERATING_HOURS_NULL.getMessage());
 
-        return dto.operatingHoursDtos().stream()
-                .map(operatingHoursService::create)
+        return dto.operatingHours().stream()
+                .map(operatingHourService::create)
                 .collect(Collectors.toList());
     }
 

@@ -21,8 +21,7 @@ public class WaitList {
     public enum WaitListStatus {
         WAITING,
         NOTIFIED,
-        CANCELLED,
-        DECLINED_SEATING
+        CANCELLED
     }
 
     @Id

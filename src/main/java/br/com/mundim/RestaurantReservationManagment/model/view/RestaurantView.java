@@ -1,7 +1,5 @@
 package br.com.mundim.RestaurantReservationManagment.model.view;
 
-import br.com.mundim.RestaurantReservationManagment.model.entity.Address;
-import br.com.mundim.RestaurantReservationManagment.model.entity.OperatingHours;
 import br.com.mundim.RestaurantReservationManagment.model.entity.Restaurant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,7 +27,7 @@ public class RestaurantView {
     private String city;
     private String state;
 
-    private List<OperatingHoursView> operatingHoursList;
+    private List<OperatingHourView> operatingHoursList;
 
     public RestaurantView(Restaurant restaurant) {
         this.id = restaurant.getId();
@@ -47,7 +45,7 @@ public class RestaurantView {
 
         this.operatingHoursList = restaurant.getOperatingHours()
                 .stream()
-                .map(OperatingHoursView::new)
+                .map(OperatingHourView::new)
                 .collect(Collectors.toList());
     }
 

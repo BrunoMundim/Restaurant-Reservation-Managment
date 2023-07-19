@@ -1,6 +1,6 @@
 package br.com.mundim.RestaurantReservationManagment.model.entity;
 
-import br.com.mundim.RestaurantReservationManagment.model.dto.OperatingHoursDTO;
+import br.com.mundim.RestaurantReservationManagment.model.dto.OperatingHourDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,7 +17,7 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @Data
 @Builder
-public class OperatingHours {
+public class OperatingHour {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +32,7 @@ public class OperatingHours {
     @NotNull
     private LocalTime closing;
 
-    public OperatingHours(OperatingHoursDTO dto) {
+    public OperatingHour(OperatingHourDTO dto) {
         this.weekDay = dto.weekDay();
         this.opening = LocalTime.parse(dto.opening());
         this.closing = LocalTime.parse(dto.closing());

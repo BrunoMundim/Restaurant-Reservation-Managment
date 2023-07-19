@@ -1,6 +1,5 @@
 package br.com.mundim.RestaurantReservationManagment.model.entity;
 
-import br.com.mundim.RestaurantReservationManagment.model.dto.OperatingHoursDTO;
 import br.com.mundim.RestaurantReservationManagment.model.dto.RestaurantDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,7 +40,7 @@ public class Restaurant {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "restaurant_id")
     @NotNull
-    private List<OperatingHours> operatingHours;
+    private List<OperatingHour> operatingHours;
 
     @CNPJ
     @Column(unique = true)
@@ -61,7 +60,7 @@ public class Restaurant {
     @NotEmpty
     private String cellphone;
 
-    public Restaurant(Address address, List<OperatingHours> operatingHours, RestaurantDTO dto) {
+    public Restaurant(Address address, List<OperatingHour> operatingHours, RestaurantDTO dto) {
         this.address = address;
         this.operatingHours = operatingHours;
         this.cnpj = dto.cnpj();
@@ -75,7 +74,7 @@ public class Restaurant {
         this.password = passwordEncoder().encode(password);
     }
 
-    public void setOperatingHours(List<OperatingHours> operatingHours) {
+    public void setOperatingHours(List<OperatingHour> operatingHours) {
         this.operatingHours.clear();
         this.operatingHours.addAll(operatingHours);
     }

@@ -63,7 +63,7 @@ public class DiningAreaService {
         return diningAreaRepository.save(diningArea);
     }
 
-    public DiningArea occupiedDiningArea(Long diningAreaId) {
+    public DiningArea occupyDiningArea(Long diningAreaId) {
         DiningArea diningArea = findById(diningAreaId);
         diningArea.setAvailability(OCCUPIED);
         return diningAreaRepository.save(diningArea);

@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Data
 @Builder
-public class Reservation {
+public class Reservation implements Comparable<Reservation> {
 
     public enum ReservationStatus {
         PENDING,    // The reservation is awaiting confirmation from the restaurant.
@@ -58,6 +58,11 @@ public class Reservation {
         this.partySize = dto.partySize();
         this.notes = dto.notes();
         this.status = ReservationStatus.PENDING;
+    }
+
+    @Override
+    public int compareTo(Reservation o) {
+        return o.getReservationDateTime().compareTo(this.getReservationDateTime());
     }
 
 }
