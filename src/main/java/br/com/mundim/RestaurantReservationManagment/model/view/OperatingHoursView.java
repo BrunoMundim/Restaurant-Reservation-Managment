@@ -3,10 +3,12 @@ package br.com.mundim.RestaurantReservationManagment.model.view;
 import br.com.mundim.RestaurantReservationManagment.model.entity.OperatingHours;
 import lombok.Data;
 
+import java.time.DayOfWeek;
+
 @Data
 public class OperatingHoursView {
 
-    private OperatingHours.WeekDay weekDay;
+    private DayOfWeek weekDay;
     private String opening;
     private String closing;
 

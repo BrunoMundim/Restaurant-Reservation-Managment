@@ -19,7 +19,7 @@ import static br.com.mundim.RestaurantReservationManagment.model.entity.DiningAr
 @AllArgsConstructor
 @Data
 @Builder
-public class DiningArea {
+public class DiningArea implements Comparable<DiningArea> {
 
     public enum Availability {
         AVAILABLE, RESERVED, OCCUPIED
@@ -29,10 +29,10 @@ public class DiningArea {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Long customerId;
+
     @NotNull
     private Long restaurantId;
-
-    private Long customerId;
 
     @NotEmpty
     private String diningAreaName;
@@ -48,6 +48,11 @@ public class DiningArea {
         this.diningAreaName = dto.diningAreaName();
         this.capacity = dto.capacity();
         this.availability = AVAILABLE;
+    }
+
+    @Override
+    public int compareTo(DiningArea other) {
+        return other.getCapacity().compareTo(this.getCapacity());
     }
 
 }

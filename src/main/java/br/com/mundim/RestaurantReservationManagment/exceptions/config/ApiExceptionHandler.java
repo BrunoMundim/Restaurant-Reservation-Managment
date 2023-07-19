@@ -72,11 +72,11 @@ public class ApiExceptionHandler {
 
         String message = "";
         if(e.toString().contains("cpf"))
-            message = "CPF already in use";
+            message = DUPLICATED_CPF.getMessage();
         if(e.toString().contains("cnpj"))
-            message = "CNPJ already in use";
+            message = DUPLICATED_CNPJ.getMessage();
         if(e.toString().contains("email"))
-            message = "Email already in use";
+            message = DUPLICATED_EMAIL.getMessage();
 
         ApiException apiException = new ApiException(
                 message,

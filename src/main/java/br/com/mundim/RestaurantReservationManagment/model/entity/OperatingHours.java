@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 
 @Entity
@@ -18,16 +19,12 @@ import java.time.LocalTime;
 @Builder
 public class OperatingHours {
 
-    public enum WeekDay {
-        MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
-    private WeekDay weekDay;
+    private DayOfWeek weekDay;
 
     @NotNull
     private LocalTime opening;

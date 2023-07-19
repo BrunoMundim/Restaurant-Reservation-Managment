@@ -15,6 +15,7 @@ public class BaseErrorMessage {
     public static final BaseErrorMessage CUSTOMER_NOT_FOUND_BY_ID = new BaseErrorMessage("CustomerNotFoundById");
     public static final BaseErrorMessage CUSTOMER_NOT_FOUND_BY_CPF = new BaseErrorMessage("CustomerNotFoundByCpf");
     public static final BaseErrorMessage CUSTOMER_NOT_FOUND_BY_EMAIL = new BaseErrorMessage("CustomerNotFoundByEmail");
+    public static final BaseErrorMessage RESERVATION_NOT_FOUND_BY_ID = new BaseErrorMessage("ReservationNotFoundById");
     public static final BaseErrorMessage OPERATING_HOURS_NULL = new BaseErrorMessage("OperatingHoursNull");
     public static final BaseErrorMessage ADDRESS_NULL = new BaseErrorMessage("AddressNull");
     public static final BaseErrorMessage INCORRECT_WEEK_DAY = new BaseErrorMessage("IncorrectWeekDay");
@@ -22,6 +23,8 @@ public class BaseErrorMessage {
     public static final BaseErrorMessage DUPLICATED_EMAIL = new BaseErrorMessage("DuplicatedEmail");
     public static final BaseErrorMessage DUPLICATED_CPF = new BaseErrorMessage("DuplicatedCPF");
     public static final BaseErrorMessage DUPLICATED_CNPJ = new BaseErrorMessage("DuplicatedCNPJ");
+    public static final BaseErrorMessage RESERVATION_TIME_UNAVAILABLE = new BaseErrorMessage("ReservationTimeUnavailable");
+    public static final BaseErrorMessage NO_DINING_AREA_AVAILABLE = new BaseErrorMessage("NoDiningAreaAvailable");
 
     private final String key;
     private String[] params;

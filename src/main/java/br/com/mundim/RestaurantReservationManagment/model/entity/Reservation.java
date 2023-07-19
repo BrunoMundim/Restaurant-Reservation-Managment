@@ -1,5 +1,6 @@
 package br.com.mundim.RestaurantReservationManagment.model.entity;
 
+import br.com.mundim.RestaurantReservationManagment.model.dto.ReservationDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,7 +25,6 @@ public class Reservation {
         CANCELLED,  // The reservation has been cancelled, either by the customer or the restaurant.
         COMPLETED,  // The reservation has been successfully completed and the dining experience has concluded.
         NO_SHOW,    // The customer did not show up for the reservation without cancelling.
-        SEATED,     // The reservation is currently in progress, indicating that the customer is currently dining.
     }
 
     @Id
@@ -38,7 +38,7 @@ public class Reservation {
     private Long restaurantId;
 
     @NotNull
-    private Long tableId;
+    private Long diningAreaId;
 
     @NotNull
     private LocalDateTime reservationDateTime;
@@ -49,5 +49,15 @@ public class Reservation {
     private ReservationStatus status;
 
     private String notes;
+
+    public Reservation(ReservationDTO dto, Long diningAreaId) {
+        this.customerId = dto.customerId();
+        this.restaurantId = dto.restaurantId();
+        this.diningAreaId = diningAreaId;
+        this.reservationDateTime = dto.reservationDateTime();
+        this.partySize = dto.partySize();
+        this.notes = dto.notes();
+        this.status = ReservationStatus.PENDING;
+    }
 
 }
