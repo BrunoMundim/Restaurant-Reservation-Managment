@@ -4,12 +4,14 @@ import br.com.mundim.RestaurantReservationManagment.model.dto.DiningAreaDTO;
 import br.com.mundim.RestaurantReservationManagment.model.entity.DiningArea;
 import br.com.mundim.RestaurantReservationManagment.service.DiningAreaService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/dining-area")
+@SecurityRequirement(name = "jwt")
 public class DiningAreaController {
 
     private final DiningAreaService diningAreaService;

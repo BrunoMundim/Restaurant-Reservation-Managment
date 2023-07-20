@@ -4,12 +4,14 @@ import br.com.mundim.RestaurantReservationManagment.model.dto.CustomerDTO;
 import br.com.mundim.RestaurantReservationManagment.model.entity.Customer;
 import br.com.mundim.RestaurantReservationManagment.service.CustomerService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/customer")
+@SecurityRequirement(name = "jwt")
 public class CustomerController {
 
     private final CustomerService customerService;

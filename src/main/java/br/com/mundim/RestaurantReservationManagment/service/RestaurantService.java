@@ -9,7 +9,9 @@ import br.com.mundim.RestaurantReservationManagment.model.entity.OperatingHour;
 import br.com.mundim.RestaurantReservationManagment.model.entity.Restaurant;
 import br.com.mundim.RestaurantReservationManagment.model.view.RestaurantView;
 import br.com.mundim.RestaurantReservationManagment.repository.RestaurantRepository;
+import br.com.mundim.RestaurantReservationManagment.security.AuthenticationService;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
@@ -25,23 +27,29 @@ public class RestaurantService {
     private final AddressService addressService;
     private final OperatingHourService operatingHourService;
     private final DiningAreaService diningAreaService;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationService authenticationService;
 
     public RestaurantService(
             RestaurantRepository restaurantRepository,
             AddressService addressService,
             OperatingHourService operatingHourService,
-            @Lazy DiningAreaService diningAreaService
-    ) {
+            @Lazy DiningAreaService diningAreaService,
+            PasswordEncoder passwordEncoder, AuthenticationService authenticationService) {
         this.restaurantRepository = restaurantRepository;
         this.addressService = addressService;
         this.operatingHourService = operatingHourService;
         this.diningAreaService = diningAreaService;
+        this.passwordEncoder = passwordEncoder;
+        this.authenticationService = authenticationService;
     }
 
     public RestaurantView create(RestaurantDTO dto) {
+        authenticationService.verifyEmailAvailability(dto.email());
         Address address = addressService.create(dto.address());
         List<OperatingHour> operatingHours = generateOperatingHours(dto);
-        Restaurant restaurant = restaurantRepository.save(new Restaurant(address, operatingHours, dto));
+        String password = passwordEncoder.encode(dto.password());
+        Restaurant restaurant = restaurantRepository.save(new Restaurant(address, operatingHours, dto, password));
         return new RestaurantView(restaurant);
     }
 
@@ -72,7 +80,6 @@ public class RestaurantService {
         restaurant.setCnpj(dto.cnpj());
         restaurant.setName(dto.name());
         restaurant.setEmail(dto.email());
-        restaurant.setPassword(dto.password());
         restaurant.setCellphone(dto.cellphone());
 
         restaurantRepository.save(restaurant);

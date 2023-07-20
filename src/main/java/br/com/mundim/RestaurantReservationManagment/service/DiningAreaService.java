@@ -44,7 +44,9 @@ public class DiningAreaService {
     public DiningArea create(DiningAreaDTO dto) {
         DiningArea diningArea = diningAreaRepository.save(new DiningArea(dto));
         OperatingHour operatingHour = findOperatingHourNow(diningArea);
-        waitListService.checkWaitList(diningArea.getId(), operatingHour);
+        if(operatingHour != null){
+            waitListService.checkWaitList(diningArea.getId(), operatingHour);
+        }
         return diningArea;
     }
 

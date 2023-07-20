@@ -4,6 +4,8 @@ import br.com.mundim.RestaurantReservationManagment.exceptions.BadRequestExcepti
 import br.com.mundim.RestaurantReservationManagment.model.dto.CustomerDTO;
 import br.com.mundim.RestaurantReservationManagment.model.entity.Customer;
 import br.com.mundim.RestaurantReservationManagment.repository.CustomerRepository;
+import br.com.mundim.RestaurantReservationManagment.security.AuthenticationService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,13 +16,19 @@ import static br.com.mundim.RestaurantReservationManagment.exceptions.config.Bas
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationService authenticationService;
 
-    public CustomerService(CustomerRepository customerRepository) {
+    public CustomerService(CustomerRepository customerRepository, PasswordEncoder passwordEncoder, AuthenticationService authenticationService) {
         this.customerRepository = customerRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.authenticationService = authenticationService;
     }
 
     public Customer create(CustomerDTO dto) {
-        return customerRepository.save(new Customer(dto));
+        authenticationService.verifyEmailAvailability(dto.email());
+        String password = passwordEncoder.encode(dto.password());
+        return customerRepository.save(new Customer(dto, password));
     }
 
     public List<Customer> findAll() {

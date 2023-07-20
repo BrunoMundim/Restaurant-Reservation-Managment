@@ -4,6 +4,7 @@ import br.com.mundim.RestaurantReservationManagment.model.dto.WaitListDTO;
 import br.com.mundim.RestaurantReservationManagment.model.entity.WaitList;
 import br.com.mundim.RestaurantReservationManagment.service.WaitListService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +14,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 @RequestMapping("/wait-list")
+@SecurityRequirement(name = "jwt")
 public class WaitListController {
 
     private final WaitListService waitListService;
