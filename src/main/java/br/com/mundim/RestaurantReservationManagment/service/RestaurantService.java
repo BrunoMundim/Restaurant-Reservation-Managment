@@ -69,8 +69,14 @@ public class RestaurantService {
                         RESTAURANT_NOT_FOUND_BY_ID.params(id.toString()).getMessage()));
     }
 
+    public RestaurantView findLoggedRestaurant() {
+        String email = authenticationService.findUserByBearer().getUsername();
+        return new RestaurantView(restaurantRepository.findByEmail(email));
+    }
+
     public RestaurantView update(Long id, RestaurantDTO dto) {
         Restaurant restaurant = findById(id);
+        authenticationService.verifyRestaurantOwnership(id);
 
         if (dto.address() == null)
             throw new BadRequestException(ADDRESS_NULL.getMessage());
@@ -88,6 +94,7 @@ public class RestaurantService {
 
     public RestaurantView deleteById(Long id) {
         Restaurant restaurant = findById(id);
+        authenticationService.verifyRestaurantOwnership(id);
         restaurantRepository.deleteById(id);
         deleteAllDiningAreasFromRestaurant(restaurant.getId());
         return new RestaurantView(restaurant);

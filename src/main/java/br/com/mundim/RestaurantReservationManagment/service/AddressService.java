@@ -21,13 +21,4 @@ public class AddressService {
         return addressRepository.save(new Address(dto));
     }
 
-    public Address findById(Long id) {
-        return addressRepository.findById(id)
-                .orElseThrow(() -> new BadRequestException(ADDRESS_NOT_FOUND_BY_ID.params(id.toString()).getMessage()));
-    }
-
-    public void deleteById(Long id) {
-        addressRepository.deleteById(id);
-    }
-
 }

@@ -7,6 +7,7 @@ import br.com.mundim.RestaurantReservationManagment.model.entity.OperatingHour;
 import br.com.mundim.RestaurantReservationManagment.model.entity.Reservation;
 import br.com.mundim.RestaurantReservationManagment.model.entity.Restaurant;
 import br.com.mundim.RestaurantReservationManagment.repository.ReservationRepository;
+import br.com.mundim.RestaurantReservationManagment.security.AuthenticationService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -25,23 +26,26 @@ public class ReservationService {
     private final DiningAreaService diningAreaService;
     private final CustomerService customerService;
     private final WaitListService waitListService;
+    private final AuthenticationService authenticationService;
 
     public ReservationService(
             ReservationRepository reservationRepository,
             RestaurantService restaurantService,
             DiningAreaService diningAreaService,
             CustomerService customerService,
-            WaitListService waitListService) {
+            WaitListService waitListService, AuthenticationService authenticationService) {
         this.reservationRepository = reservationRepository;
         this.restaurantService = restaurantService;
         this.diningAreaService = diningAreaService;
         this.customerService = customerService;
         this.waitListService = waitListService;
+        this.authenticationService = authenticationService;
     }
 
     // CRUD Operations
 
     public Reservation customerCreateReservation(ReservationDTO dto) {
+        authenticationService.verifyCustomerOwnership(dto.customerId());
         findOperatingHourOfReservation(dto.restaurantId(), dto.reservationDateTime());
         DiningArea diningArea =
                 findAvailableDiningArea(
@@ -52,7 +56,7 @@ public class ReservationService {
         return reservationRepository.save(createReservation(dto, diningArea));
     }
 
-    public Reservation findById(Long id) {
+    private Reservation findById(Long id) {
         return reservationRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException(
                         RESERVATION_NOT_FOUND_BY_ID.params(id.toString()).getMessage())
@@ -60,6 +64,7 @@ public class ReservationService {
     }
 
     public List<Reservation> findByRestaurantId(Long restaurantId) {
+        authenticationService.verifyRestaurantOwnership(restaurantId);
         List<Reservation> reservations = reservationRepository.findByRestaurantId(restaurantId);
         reservations.sort(Collections.reverseOrder());
         return reservations;
@@ -68,11 +73,13 @@ public class ReservationService {
     public Reservation restaurantConfirmReservation(Long reservationId) {
         // TODO: Notify customer
         Reservation reservation = findById(reservationId);
+        authenticationService.verifyRestaurantOwnership(reservation.getRestaurantId());
         reservation.setStatus(CONFIRMED);
         return reservationRepository.save(reservation);
     }
 
     public Reservation cancelReservation(Long reservationId) {
+        verifyOwnershipCancelReservation(reservationId);
         // TODO: Notify customer
         Reservation reservation = findById(reservationId);
         reservation.setStatus(CANCELLED);
@@ -80,9 +87,19 @@ public class ReservationService {
         return reservationRepository.save(reservation);
     }
 
+    private void verifyOwnershipCancelReservation(Long reservationId) {
+        Reservation reservation = findById(reservationId);
+        if(authenticationService.findUserByBearer().getAuthorities().equals("ROLE_CUSTOMER")){
+            authenticationService.verifyCustomerOwnership(reservation.getCustomerId());
+        } else {
+            authenticationService.verifyRestaurantOwnership(reservation.getRestaurantId());
+        }
+    }
+
     public Reservation noShowReservation(Long reservationId) {
         // TODO: Notify customer
         Reservation reservation = findById(reservationId);
+        authenticationService.verifyRestaurantOwnership(reservation.getRestaurantId());
         reservation.setStatus(NO_SHOW);
         createNewReservationFromWaitList(reservation);
         return reservationRepository.save(reservation);
@@ -91,6 +108,7 @@ public class ReservationService {
     public Reservation completeReservation(Long reservationId) {
         // Reservation is completed when customer arrives in the dining area, so dining area becomes occupied
         Reservation reservation = findById(reservationId);
+        authenticationService.verifyRestaurantOwnership(reservation.getRestaurantId());
         reservation.setStatus(COMPLETED);
         diningAreaService.occupyDiningArea(reservation.getDiningAreaId());
         return reservationRepository.save(reservation);
@@ -98,6 +116,7 @@ public class ReservationService {
 
     public Reservation changeReservationDateTime(Long reservationId, LocalDateTime reservationTime) {
         Reservation reservation = findById(reservationId);
+        authenticationService.verifyCustomerOwnership(reservation.getCustomerId());
         if (reservation.getReservationDateTime().toLocalDate().equals(reservationTime.toLocalDate())) { // Same day
             reservation.setReservationDateTime(reservationTime);
             return reservation;
@@ -115,6 +134,7 @@ public class ReservationService {
 
     public Reservation changePartySize(Long reservationId, Integer partySize) {
         Reservation reservation = findById(reservationId);
+        authenticationService.verifyCustomerOwnership(reservation.getCustomerId());
         DiningArea actualDiningArea = diningAreaService.findById(reservation.getDiningAreaId());
         if (actualDiningArea.getCapacity() < partySize) {
             DiningArea newDiningArea = findAvailableDiningArea(

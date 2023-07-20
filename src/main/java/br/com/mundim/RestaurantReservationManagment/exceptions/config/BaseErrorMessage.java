@@ -11,6 +11,7 @@ public class BaseErrorMessage {
 
     public static final BaseErrorMessage ADDRESS_NOT_FOUND_BY_ID = new BaseErrorMessage("AddressNotFoundById");
     public static final BaseErrorMessage RESTAURANT_NOT_FOUND_BY_ID = new BaseErrorMessage("RestaurantNotFoundById");
+    public static final BaseErrorMessage RESTAURANT_NOT_FOUND_BY_EMAIL = new BaseErrorMessage("RestaurantNotFoundByEmail");
     public static final BaseErrorMessage DINING_AREA_NOT_FOUND_BY_ID = new BaseErrorMessage("DiningAreaNotFoundById");
     public static final BaseErrorMessage CUSTOMER_NOT_FOUND_BY_ID = new BaseErrorMessage("CustomerNotFoundById");
     public static final BaseErrorMessage CUSTOMER_NOT_FOUND_BY_CPF = new BaseErrorMessage("CustomerNotFoundByCpf");
@@ -27,6 +28,10 @@ public class BaseErrorMessage {
     public static final BaseErrorMessage NO_DINING_AREA_AVAILABLE = new BaseErrorMessage("NoDiningAreaAvailable");
     public static final BaseErrorMessage NO_DINING_AREA_WITH_PARTY_SIZE = new BaseErrorMessage("NoDiningAreaWithSizeAsked");
     public static final BaseErrorMessage CONFLICTING_OPERATING_HOURS = new BaseErrorMessage("ConflictOperatingHours");
+
+    // UNAUTHORIZED EXCEPTIONS
+    public static final BaseErrorMessage UNAUTHORIZED_RESTAURANT_EXCEPTION = new BaseErrorMessage("UnauthorizedRestaurantException");
+    public static final BaseErrorMessage UNAUTHORIZED_CUSTOMER_EXCEPTION = new BaseErrorMessage("UnauthorizedCustomerException");
 
     private final String key;
     private String[] params;

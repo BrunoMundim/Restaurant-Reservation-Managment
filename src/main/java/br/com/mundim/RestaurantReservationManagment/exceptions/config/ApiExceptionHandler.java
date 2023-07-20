@@ -1,6 +1,7 @@
 package br.com.mundim.RestaurantReservationManagment.exceptions.config;
 
 import br.com.mundim.RestaurantReservationManagment.exceptions.BadRequestException;
+import br.com.mundim.RestaurantReservationManagment.exceptions.UnauthorizedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -21,6 +22,19 @@ public class ApiExceptionHandler {
     @ExceptionHandler(value = BadRequestException.class)
     public ResponseEntity<Object> handleBadRequestException(BadRequestException e) {
         HttpStatus responseStatus = HttpStatus.BAD_REQUEST;
+
+        ApiException apiException = new ApiException(
+                e.getMessage(),
+                responseStatus,
+                new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(Calendar.getInstance().getTime())
+        );
+
+        return new ResponseEntity<>(apiException, responseStatus);
+    }
+
+    @ExceptionHandler(value = UnauthorizedException.class)
+    public ResponseEntity<Object> handleUnauthorizedException(UnauthorizedException e) {
+        HttpStatus responseStatus = HttpStatus.UNAUTHORIZED;
 
         ApiException apiException = new ApiException(
                 e.getMessage(),
@@ -84,7 +98,5 @@ public class ApiExceptionHandler {
 
         return new ResponseEntity<>(apiException, badRequest);
     }
-
-
 
 }

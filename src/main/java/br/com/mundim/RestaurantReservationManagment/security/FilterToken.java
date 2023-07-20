@@ -39,7 +39,7 @@ public class FilterToken extends OncePerRequestFilter {
             token = authorizationHeader.replace("Bearer ", "");
             var subject = this.tokenService.getSubject(token);
 
-            var user = authenticationService.findUserByEmail(subject);
+            var user = authenticationService.loadUserByUsername(subject);
 
             if (user == null) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token expired !");

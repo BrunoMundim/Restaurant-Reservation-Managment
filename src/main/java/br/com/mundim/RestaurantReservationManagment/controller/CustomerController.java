@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @RestController
@@ -28,24 +29,34 @@ public class CustomerController {
 
     @GetMapping
     @Operation(tags = "CUSTOMER", summary = "Find all Customers")
+    @RolesAllowed("ADMIN")
     public List<Customer> findAll() {
         return customerService.findAll();
     }
 
     @GetMapping("/find-by-id")
     @Operation(tags = "CUSTOMER", summary = "Find Customer by ID")
+    @RolesAllowed("ADMIN")
     public Customer findById(@RequestParam Long id) {
         return customerService.findById(id);
     }
 
+    @GetMapping("/find-current-customer")
+    @Operation(tags = "CUSTOMER", summary = "Find current Customer")
+    public Customer findCurrentCustomer() {
+        return customerService.findCurrentCustomer();
+    }
+
     @GetMapping("/find-by-cpf")
     @Operation(tags = "CUSTOMER", summary = "Find Customer by CPF")
+    @RolesAllowed("ADMIN")
     public Customer findByCpf(@RequestParam String cpf) {
         return customerService.findByCpf(cpf);
     }
 
     @GetMapping("/find-by-email")
     @Operation(tags = "CUSTOMER", summary = "Find Customer by email")
+    @RolesAllowed("ADMIN")
     public Customer findByEmail(@RequestParam String email) {
         return customerService.findByEmail(email);
     }

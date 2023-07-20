@@ -7,6 +7,7 @@ import br.com.mundim.RestaurantReservationManagment.model.entity.Reservation;
 import br.com.mundim.RestaurantReservationManagment.model.entity.WaitList;
 import br.com.mundim.RestaurantReservationManagment.repository.ReservationRepository;
 import br.com.mundim.RestaurantReservationManagment.repository.WaitListRepository;
+import br.com.mundim.RestaurantReservationManagment.security.AuthenticationService;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -21,18 +22,27 @@ public class WaitListService {
     private final WaitListRepository waitListRepository;
     private final DiningAreaService diningAreaService;
     private final ReservationRepository reservationRepository;
+    private final AuthenticationService authenticationService;
 
-    public WaitListService(WaitListRepository waitListRepository, @Lazy DiningAreaService diningAreaService, ReservationRepository reservationRepository) {
+    public WaitListService(
+            WaitListRepository waitListRepository,
+            @Lazy DiningAreaService diningAreaService,
+            ReservationRepository reservationRepository,
+            AuthenticationService authenticationService
+    ) {
         this.waitListRepository = waitListRepository;
         this.diningAreaService = diningAreaService;
         this.reservationRepository = reservationRepository;
+        this.authenticationService = authenticationService;
     }
 
     public WaitList create(WaitListDTO dto) {
+        authenticationService.verifyCustomerOwnership(dto.customerId());
         return waitListRepository.save(new WaitList(dto));
     }
 
     public List<WaitList> findByRestaurantId(Long restaurantId) {
+        authenticationService.verifyRestaurantOwnership(restaurantId);
         return waitListRepository.findByRestaurantId(restaurantId);
     }
 

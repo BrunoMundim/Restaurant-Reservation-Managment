@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
@@ -31,14 +32,22 @@ public class RestaurantController {
 
     @GetMapping("/find-all")
     @Operation(tags = "RESTAURANT", summary = "Find all restaurants")
+    @RolesAllowed("ADMIN")
     public ResponseEntity<List<RestaurantView>> findAll() {
         return ResponseEntity.ok(restaurantService.findAll());
     }
 
     @GetMapping("/find-by-id")
     @Operation(tags = "RESTAURANT", summary = "Find Restaurant by ID")
+    @RolesAllowed("ADMIN")
     public ResponseEntity<RestaurantView> findById(@RequestParam Long restaurantId) {
         return ResponseEntity.ok(restaurantService.findByIdReturnView(restaurantId));
+    }
+
+    @GetMapping("/find-logged")
+    @Operation(tags = "RESTAURANT", summary = "Find logged Restaurant")
+    public ResponseEntity<RestaurantView> findLoggedRestaurant() {
+        return ResponseEntity.ok(restaurantService.findLoggedRestaurant());
     }
 
     @PutMapping

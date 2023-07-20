@@ -8,7 +8,7 @@ import br.com.mundim.RestaurantReservationManagment.model.entity.Reservation;
 import br.com.mundim.RestaurantReservationManagment.model.entity.Restaurant;
 import br.com.mundim.RestaurantReservationManagment.repository.DiningAreaRepository;
 import br.com.mundim.RestaurantReservationManagment.repository.ReservationRepository;
-import org.springframework.context.annotation.Lazy;
+import br.com.mundim.RestaurantReservationManagment.security.AuthenticationService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -27,16 +27,18 @@ public class DiningAreaService {
     private final ReservationRepository reservationRepository;
     private final RestaurantService restaurantService;
     private final WaitListService waitListService;
+    private final AuthenticationService authenticationService;
 
     public DiningAreaService(
             DiningAreaRepository diningAreaRepository,
             ReservationRepository reservationRepository,
             RestaurantService restaurantService,
-            WaitListService waitListService) {
+            WaitListService waitListService, AuthenticationService authenticationService) {
         this.diningAreaRepository = diningAreaRepository;
         this.reservationRepository = reservationRepository;
         this.restaurantService = restaurantService;
         this.waitListService = waitListService;
+        this.authenticationService = authenticationService;
     }
 
     // CRUD Operations
@@ -55,11 +57,13 @@ public class DiningAreaService {
                 .orElseThrow(() -> new BadRequestException(
                         DINING_AREA_NOT_FOUND_BY_ID.params(id.toString()).getMessage())
                 );
+        authenticationService.verifyRestaurantOwnership(diningArea.getRestaurantId());
         verifyReservations(diningArea, findOperatingHourNow(diningArea));
         return diningArea;
     }
 
     public List<DiningArea> findByRestaurantId(Long restaurantId) {
+        authenticationService.verifyRestaurantOwnership(restaurantId);
         List<DiningArea> diningAreas = diningAreaRepository.findByRestaurantId(restaurantId);
         diningAreas.sort(Collections.reverseOrder());
         if(diningAreas.size()>0) {
@@ -70,6 +74,7 @@ public class DiningAreaService {
 
     public DiningArea update(Long diningAreaId, DiningAreaDTO dto) {
         DiningArea diningArea = findById(diningAreaId);
+        authenticationService.verifyRestaurantOwnership(diningArea.getRestaurantId());
 
         diningArea.setDiningAreaName(dto.diningAreaName());
         diningArea.setCapacity(dto.capacity());
@@ -79,6 +84,7 @@ public class DiningAreaService {
 
     public DiningArea deleteById(Long diningAreaId) {
         DiningArea diningArea = findById(diningAreaId);
+        authenticationService.verifyRestaurantOwnership(diningArea.getRestaurantId());
         diningAreaRepository.deleteById(diningAreaId);
         return diningArea;
     }
@@ -87,6 +93,7 @@ public class DiningAreaService {
 
     public DiningArea freeDiningArea(Long diningAreaId) {
         DiningArea diningArea = findById(diningAreaId);
+        authenticationService.verifyRestaurantOwnership(diningArea.getRestaurantId());
         diningArea.setAvailability(AVAILABLE);
         verifyReservations(diningArea, findOperatingHourNow(diningArea));
         OperatingHour operatingHour = findOperatingHourNow(diningArea);
@@ -96,12 +103,14 @@ public class DiningAreaService {
 
     public DiningArea occupyDiningArea(Long diningAreaId) {
         DiningArea diningArea = findById(diningAreaId);
+        authenticationService.verifyRestaurantOwnership(diningArea.getRestaurantId());
         diningArea.setAvailability(OCCUPIED);
         return diningAreaRepository.save(diningArea);
     }
 
     public void reserveDiningArea(Long diningAreaId) {
         DiningArea diningArea = findById(diningAreaId);
+        authenticationService.verifyRestaurantOwnership(diningArea.getRestaurantId());
         diningArea.setAvailability(RESERVED);
         diningAreaRepository.save(diningArea);
     }
