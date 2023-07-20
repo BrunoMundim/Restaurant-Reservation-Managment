@@ -17,7 +17,7 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @Data
 @Builder
-public class OperatingHour {
+public class OperatingHour implements Comparable<OperatingHour> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,9 +32,18 @@ public class OperatingHour {
     @NotNull
     private LocalTime closing;
 
+    @NotNull
+    private boolean fullTable;
+
     public OperatingHour(OperatingHourDTO dto) {
         this.weekDay = dto.weekDay();
         this.opening = LocalTime.parse(dto.opening());
         this.closing = LocalTime.parse(dto.closing());
+        this.fullTable = dto.fullTable();
+    }
+
+    @Override
+    public int compareTo(OperatingHour o) {
+        return this.getOpening().compareTo(o.getOpening());
     }
 }

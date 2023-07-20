@@ -1,14 +1,12 @@
 package br.com.mundim.RestaurantReservationManagment.exceptions.config;
 
 import br.com.mundim.RestaurantReservationManagment.exceptions.BadRequestException;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import javax.validation.ConstraintViolationException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeParseException;

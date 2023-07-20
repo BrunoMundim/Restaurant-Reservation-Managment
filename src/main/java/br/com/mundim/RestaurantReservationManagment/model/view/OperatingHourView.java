@@ -11,11 +11,13 @@ public class OperatingHourView {
     private DayOfWeek weekDay;
     private String opening;
     private String closing;
+    private Boolean fullTable;
 
     public OperatingHourView(OperatingHour operatingHour) {
         this.weekDay = operatingHour.getWeekDay();
         this.opening = operatingHour.getOpening().toString();
         this.closing = operatingHour.getClosing().toString();
+        this.fullTable = operatingHour.isFullTable();
     }
 
 }

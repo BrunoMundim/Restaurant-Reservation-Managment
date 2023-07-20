@@ -25,6 +25,8 @@ public class BaseErrorMessage {
     public static final BaseErrorMessage DUPLICATED_CNPJ = new BaseErrorMessage("DuplicatedCNPJ");
     public static final BaseErrorMessage RESERVATION_TIME_UNAVAILABLE = new BaseErrorMessage("ReservationTimeUnavailable");
     public static final BaseErrorMessage NO_DINING_AREA_AVAILABLE = new BaseErrorMessage("NoDiningAreaAvailable");
+    public static final BaseErrorMessage NO_DINING_AREA_WITH_PARTY_SIZE = new BaseErrorMessage("NoDiningAreaWithSizeAsked");
+    public static final BaseErrorMessage CONFLICTING_OPERATING_HOURS = new BaseErrorMessage("ConflictOperatingHours");
 
     private final String key;
     private String[] params;

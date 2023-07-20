@@ -1,7 +1,6 @@
 package br.com.mundim.RestaurantReservationManagment.service;
 
 import br.com.mundim.RestaurantReservationManagment.exceptions.BadRequestException;
-import br.com.mundim.RestaurantReservationManagment.exceptions.config.BaseErrorMessage;
 import br.com.mundim.RestaurantReservationManagment.model.dto.AddressDTO;
 import br.com.mundim.RestaurantReservationManagment.model.entity.Address;
 import br.com.mundim.RestaurantReservationManagment.repository.AddressRepository;

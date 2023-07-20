@@ -46,7 +46,7 @@ public class ReservationService {
 
     public List<Reservation> findByRestaurantId(Long restaurantId) {
         List<Reservation> reservations = reservationRepository.findByRestaurantId(restaurantId);
-        Collections.sort(reservations, Collections.reverseOrder());
+        reservations.sort(Collections.reverseOrder());
         return reservations;
     }
 
@@ -81,11 +81,29 @@ public class ReservationService {
     private DiningArea findAvailableDiningArea(Long restaurantId, Integer partySize, LocalDateTime reservationDateTime) {
         List<DiningArea> diningAreas = diningAreaService.findByRestaurantId(restaurantId);
 
-        return diningAreas.stream()
+        // Check if the reservation requires a full table
+        boolean requiresFullTable = findOperatingHourOfReservation(restaurantId, reservationDateTime).isFullTable();
+
+        // Filter dining areas based on capacity and availability
+        List<DiningArea> availableDiningAreas = diningAreas.stream()
                 .filter(diningArea -> diningArea.getCapacity() >= partySize)
                 .filter(diningArea -> !verifyDiningAreaAlreadyReserved(diningArea, reservationDateTime))
-                .findFirst()
-                .orElseThrow(() -> new BadRequestException(NO_DINING_AREA_AVAILABLE.getMessage()));
+                .toList();
+
+        // If reservation requires a full table, filter based on exact capacity
+        if (requiresFullTable) {
+            return availableDiningAreas.stream()
+                    .filter(diningArea -> diningArea.getCapacity().equals(partySize))
+                    .findFirst()
+                    .orElseThrow(() -> new BadRequestException(NO_DINING_AREA_WITH_PARTY_SIZE.getMessage()));
+        }
+
+        if (availableDiningAreas.isEmpty()) {
+            throw new BadRequestException(NO_DINING_AREA_AVAILABLE.getMessage());
+        }
+
+        // Return the first available dining area
+        return availableDiningAreas.get(0);
     }
 
     private boolean verifyDiningAreaAlreadyReserved(DiningArea diningArea, LocalDateTime reservationTime) {

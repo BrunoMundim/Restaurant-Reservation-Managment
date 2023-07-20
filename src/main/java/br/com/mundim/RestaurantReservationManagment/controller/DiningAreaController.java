@@ -38,8 +38,20 @@ public class DiningAreaController {
 
     @PutMapping
     @Operation(tags = "DINING AREA", summary = "Update Dining Area by id")
-    public DiningArea findById(@RequestParam Long id, @RequestBody DiningAreaDTO dto) {
+    public DiningArea updateById(@RequestParam Long id, @RequestBody DiningAreaDTO dto) {
         return diningAreaService.update(id, dto);
+    }
+
+    @PutMapping("/free")
+    @Operation(tags = "DINING AREA", summary = "Free Dining Area by id")
+    public DiningArea freeDiningArea(@RequestParam Long id) {
+        return diningAreaService.freeDiningArea(id);
+    }
+
+    @PutMapping("/occupy")
+    @Operation(tags = "DINING AREA", summary = "Ocuppy Dining Area by id")
+    public DiningArea occupyDiningArea(@RequestParam Long id) {
+        return diningAreaService.occupyDiningArea(id);
     }
 
     @DeleteMapping

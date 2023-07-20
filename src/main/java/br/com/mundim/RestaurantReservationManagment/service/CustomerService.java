@@ -36,14 +36,14 @@ public class CustomerService {
 
     public Customer findByCpf(String cpf) {
         Customer customer = customerRepository.findByCpf(cpf);
-        if(customer == null)
+        if (customer == null)
             throw new BadRequestException(CUSTOMER_NOT_FOUND_BY_CPF.params(cpf).getMessage());
         return customer;
     }
 
     public Customer findByEmail(String email) {
         Customer customer = customerRepository.findByEmail(email);
-        if(customer == null)
+        if (customer == null)
             throw new BadRequestException(CUSTOMER_NOT_FOUND_BY_EMAIL.params(email).getMessage());
         return customer;
     }
