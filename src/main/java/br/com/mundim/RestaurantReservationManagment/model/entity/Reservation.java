@@ -60,6 +60,16 @@ public class Reservation implements Comparable<Reservation> {
         this.status = ReservationStatus.PENDING;
     }
 
+    public Reservation(WaitList waitList, Long diningAreaId) {
+        this.customerId = waitList.getCustomerId();
+        this.restaurantId = waitList.getRestaurantId();
+        this.diningAreaId = diningAreaId;
+        this.reservationDateTime = waitList.getReservationDateTime();
+        this.partySize = waitList.getPartySize();
+        this.notes = waitList.getNotes();
+        this.status = ReservationStatus.PENDING;
+    }
+
     @Override
     public int compareTo(Reservation o) {
         return o.getReservationDateTime().compareTo(this.getReservationDateTime());

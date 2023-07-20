@@ -5,8 +5,10 @@ import br.com.mundim.RestaurantReservationManagment.model.dto.DiningAreaDTO;
 import br.com.mundim.RestaurantReservationManagment.model.entity.DiningArea;
 import br.com.mundim.RestaurantReservationManagment.model.entity.OperatingHour;
 import br.com.mundim.RestaurantReservationManagment.model.entity.Reservation;
+import br.com.mundim.RestaurantReservationManagment.model.entity.Restaurant;
 import br.com.mundim.RestaurantReservationManagment.repository.DiningAreaRepository;
 import br.com.mundim.RestaurantReservationManagment.repository.ReservationRepository;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -24,19 +26,26 @@ public class DiningAreaService {
     private final DiningAreaRepository diningAreaRepository;
     private final ReservationRepository reservationRepository;
     private final RestaurantService restaurantService;
+    private final WaitListService waitListService;
 
     public DiningAreaService(
             DiningAreaRepository diningAreaRepository,
             ReservationRepository reservationRepository,
-            RestaurantService restaurantService
-    ) {
+            RestaurantService restaurantService,
+            WaitListService waitListService) {
         this.diningAreaRepository = diningAreaRepository;
         this.reservationRepository = reservationRepository;
         this.restaurantService = restaurantService;
+        this.waitListService = waitListService;
     }
 
+    // CRUD Operations
+
     public DiningArea create(DiningAreaDTO dto) {
-        return diningAreaRepository.save(new DiningArea(dto));
+        DiningArea diningArea = diningAreaRepository.save(new DiningArea(dto));
+        OperatingHour operatingHour = findOperatingHourNow(diningArea);
+        waitListService.checkWaitList(diningArea.getId(), operatingHour);
+        return diningArea;
     }
 
     public DiningArea findById(Long id) {
@@ -57,12 +66,55 @@ public class DiningAreaService {
         return diningAreas;
     }
 
+    public DiningArea update(Long diningAreaId, DiningAreaDTO dto) {
+        DiningArea diningArea = findById(diningAreaId);
+
+        diningArea.setDiningAreaName(dto.diningAreaName());
+        diningArea.setCapacity(dto.capacity());
+
+        return diningAreaRepository.save(diningArea);
+    }
+
+    public DiningArea deleteById(Long diningAreaId) {
+        DiningArea diningArea = findById(diningAreaId);
+        diningAreaRepository.deleteById(diningAreaId);
+        return diningArea;
+    }
+
+    // Availability Operations
+
+    public DiningArea freeDiningArea(Long diningAreaId) {
+        DiningArea diningArea = findById(diningAreaId);
+        diningArea.setAvailability(AVAILABLE);
+        verifyReservations(diningArea, findOperatingHourNow(diningArea));
+        OperatingHour operatingHour = findOperatingHourNow(diningArea);
+        waitListService.checkWaitList(diningAreaId, operatingHour);
+        return diningAreaRepository.save(diningArea);
+    }
+
+    public DiningArea occupyDiningArea(Long diningAreaId) {
+        DiningArea diningArea = findById(diningAreaId);
+        diningArea.setAvailability(OCCUPIED);
+        return diningAreaRepository.save(diningArea);
+    }
+
+    public void reserveDiningArea(Long diningAreaId) {
+        DiningArea diningArea = findById(diningAreaId);
+        diningArea.setAvailability(RESERVED);
+        diningAreaRepository.save(diningArea);
+    }
+
+    // Helper Methods
+
     private void verifyReservations(DiningArea diningArea, OperatingHour operatingHour) {
         if(operatingHour != null){
             List<Reservation> reservations = findTodayReservations(diningArea);
             for(Reservation reservation:reservations) {
                 if(reservationIsAfterOpening(reservation.getReservationDateTime(), operatingHour .getOpening())
-                        && reservationIsBeforeClosing(reservation.getReservationDateTime(), operatingHour.getClosing())) {
+                        && reservationIsBeforeClosing(reservation.getReservationDateTime(), operatingHour.getClosing())
+                        && reservation.getStatus() != Reservation.ReservationStatus.COMPLETED
+                        && reservation.getStatus() != Reservation.ReservationStatus.CANCELLED
+                        && reservation.getStatus() != Reservation.ReservationStatus.NO_SHOW) {
                     reserveDiningArea(diningArea.getId());
                 }
             }
@@ -70,7 +122,8 @@ public class DiningAreaService {
     }
 
     private OperatingHour findOperatingHourNow(DiningArea diningArea) {
-        return restaurantService.findById(diningArea.getRestaurantId())
+        Restaurant restaurant = restaurantService.findById(diningArea.getRestaurantId());
+        return restaurant
                 .getOperatingHours()
                 .stream()
                 .filter(oh -> oh.getWeekDay().equals(LocalDateTime.now().getDayOfWeek()))
@@ -93,39 +146,6 @@ public class DiningAreaService {
 
     private boolean reservationIsBeforeClosing(LocalDateTime reservationDateTime, LocalTime closing) {
         return closing.minusMinutes(1).isBefore(reservationDateTime.toLocalTime());
-    }
-
-    public DiningArea update(Long diningAreaId, DiningAreaDTO dto) {
-        DiningArea diningArea = findById(diningAreaId);
-
-        diningArea.setDiningAreaName(dto.diningAreaName());
-        diningArea.setCapacity(dto.capacity());
-
-        return diningAreaRepository.save(diningArea);
-    }
-
-    public DiningArea deleteById(Long diningAreaId) {
-        DiningArea diningArea = findById(diningAreaId);
-        diningAreaRepository.deleteById(diningAreaId);
-        return diningArea;
-    }
-
-    public DiningArea freeDiningArea(Long diningAreaId) {
-        DiningArea diningArea = findById(diningAreaId);
-        diningArea.setAvailability(AVAILABLE);
-        return diningAreaRepository.save(diningArea);
-    }
-
-    public DiningArea occupyDiningArea(Long diningAreaId) {
-        DiningArea diningArea = findById(diningAreaId);
-        diningArea.setAvailability(OCCUPIED);
-        return diningAreaRepository.save(diningArea);
-    }
-
-    public DiningArea reserveDiningArea(Long diningAreaId) {
-        DiningArea diningArea = findById(diningAreaId);
-        diningArea.setAvailability(RESERVED);
-        return diningAreaRepository.save(diningArea);
     }
 
 }
