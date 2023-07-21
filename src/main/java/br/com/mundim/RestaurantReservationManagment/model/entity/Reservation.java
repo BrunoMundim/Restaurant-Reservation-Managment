@@ -1,14 +1,14 @@
 package br.com.mundim.RestaurantReservationManagment.model.entity;
 
 import br.com.mundim.RestaurantReservationManagment.model.dto.ReservationDTO;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 
 @Entity

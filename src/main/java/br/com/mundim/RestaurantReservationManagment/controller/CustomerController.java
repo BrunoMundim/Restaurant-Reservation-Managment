@@ -5,9 +5,9 @@ import br.com.mundim.RestaurantReservationManagment.model.entity.Customer;
 import br.com.mundim.RestaurantReservationManagment.service.CustomerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.annotation.security.RolesAllowed;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @RestController

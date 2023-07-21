@@ -5,10 +5,10 @@ import br.com.mundim.RestaurantReservationManagment.model.view.RestaurantView;
 import br.com.mundim.RestaurantReservationManagment.service.RestaurantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.annotation.security.RolesAllowed;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
